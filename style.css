@@ -1,1 +1,59 @@
+body {
+  background: #0f0f0f;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #1f80e0;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.card {
+  background-color: #222;
+  padding: 10px;
+  border-radius: 12px;
+  width: 160px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+.card-img {
+  width: 100%;
+  border-radius: 8px;
+  height: 200px;
+  object-fit: cover;
+}
+
+.card-name {
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.card-rarity {
+  font-size: 12px;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.card-rarity.common { color: gray; }
+.card-rarity.rare { color: #3fa; }
+.card-rarity.epic { color: #c4f; }
+.card-rarity.legendary { color: gold; }
 
