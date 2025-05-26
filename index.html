@@ -8,57 +8,83 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #121212;
-      color: #fff;
+      background-color: #0f0f0f;
+      color: #ffffff;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
+      padding: 20px;
     }
-    .card {
-      background: #1f1f1f;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 10px 0;
+    h1, h2 {
+      text-align: center;
+    }
+    .auth, .dashboard {
+      margin: 20px 0;
+      text-align: center;
+    }
+    input, button {
+      padding: 10px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
     }
     button {
-      padding: 10px;
-      background: #007bff;
+      background: #00bcd4;
       color: white;
-      border: none;
-      margin: 5px;
-      border-radius: 5px;
       cursor: pointer;
     }
-    input {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 5px;
+    button:hover {
+      background: #0097a7;
+    }
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .card {
+      background: #1c1c1c;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px;
+      width: 150px;
+      text-align: center;
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    }
+    .card button {
+      margin-top: 10px;
+      font-size: 0.8em;
+    }
+    .coins {
+      font-weight: bold;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>CricBash</h1>
-    
-    <div id="auth-section">
-      <input type="email" id="email" placeholder="Email">
-      <input type="password" id="password" placeholder="Password">
+
+    <div class="auth" id="auth-section">
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
       <button onclick="signup()">Sign Up</button>
       <button onclick="login()">Login</button>
-      <button onclick="logout()">Logout</button>
     </div>
 
-    <div id="dashboard" style="display:none;">
+    <div class="dashboard" id="dashboard" style="display:none;">
       <h2>Welcome, <span id="username"></span></h2>
-      <p>Coins: <span id="coins"></span></p>
+      <p class="coins">Coins: <span id="coins">0</span></p>
       <button onclick="openStarterPack()">Open Starter Pack (750 Coins)</button>
-      <h3>Your Squad:</h3>
-      <ul id="squad"></ul>
-      <h3>Dream Team (max 11 players):</h3>
-      <ul id="dream-team"></ul>
+      <button onclick="logout()">Logout</button>
+
+      <h3>Your Squad</h3>
+      <div class="cards-container" id="squad"></div>
+
+      <h3>Your Dream Team (Max 11)</h3>
+      <div class="cards-container" id="dream-team"></div>
     </div>
   </div>
 
