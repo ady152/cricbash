@@ -8,8 +8,7 @@ const firebaseConfig = {
   projectId: "cricbash-bab6c",
   storageBucket: "cricbash-bab6c.appspot.com",
   messagingSenderId: "361682550397",
-  appId: "1:361682550397:web:eac03d09959365e93dfb14",
-  measurementId: "G-7GVZGWVFRC"
+  appId: "1:361682550397:web:eac03d09959365e93dfb14"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -19,25 +18,24 @@ const db = getFirestore();
 const playersList = [
   "J Sharma", "P Dubey", "R Dhawan", "Tanush Kotian", "Sai Sudarshan",
   "Suryakumar Yadav", "Kartik Tyagi", "Mayank Dagar", "Jasprit Bumrah",
-  "MS Dhoni", "V Kohli", "R Sharma", "S Tendulkar", "J Anderson", "J Buttler",
-  "P Cummins", "M Starc", "Anmolpreet Singh", "N Rana", "A Siddharth",
-  "R Rossouw", "A Raghuvanshi", "S Gopal", "M Theekshana"
+  "MS Dhoni", "Virat Kohli", "Rohit Sharma", "S Tendulkar", "J Anderson",
+  "Jos Buttler", "Pat Cummins", "M Starc", "Anmolpreet Singh", "Nitish Rana",
+  "A Siddharth", "R Rossouw", "A Raghuvanshi", "S Gopal", "Theekshana"
 ];
 
 let currentUser = null;
 
-// Auth
 window.signup = async () => {
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
   try {
-    const userCred = await createUserWithEmailAndPassword(auth, email, pass);
-    await setDoc(doc(db, "users", userCred.user.uid), {
+    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    await setDoc(doc(db, "users", cred.user.uid), {
       coins: 1000,
       squad: [],
       dreamTeam: []
     });
-    alert("Sign Up Success!");
+    alert("Sign-up successful!");
   } catch (e) {
     alert(e.message);
   }
@@ -48,7 +46,6 @@ window.login = async () => {
   const pass = document.getElementById("password").value;
   try {
     await signInWithEmailAndPassword(auth, email, pass);
-    alert("Login Success!");
   } catch (e) {
     alert(e.message);
   }
@@ -56,9 +53,9 @@ window.login = async () => {
 
 window.logout = async () => {
   await signOut(auth);
-  document.getElementById("dashboard").style.display = "none";
+  currentUser = null;
   document.getElementById("auth-section").style.display = "block";
-  alert("Logged out!");
+  document.getElementById("dashboard").style.display = "none";
 };
 
 onAuthStateChanged(auth, async (user) => {
@@ -67,76 +64,64 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("auth-section").style.display = "none";
     document.getElementById("dashboard").style.display = "block";
     document.getElementById("username").innerText = user.email;
-
     const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      document.getElementById("coins").innerText = userDoc.data().coins;
-      renderSquad(userDoc.data().squad || []);
-      renderDreamTeam(userDoc.data().dreamTeam || []);
-    }
+    const data = userDoc.data();
+    document.getElementById("coins").innerText = data.coins;
+    renderCards("squad", data.squad, true);
+    renderCards("dream-team", data.dreamTeam, false);
   }
 });
 
-// Pack Opening
 window.openStarterPack = async () => {
   if (!currentUser) return;
-  const userRef = doc(db, "users", currentUser.uid);
-  const userSnap = await getDoc(userRef);
-  let { coins, squad } = userSnap.data();
+  const ref = doc(db, "users", currentUser.uid);
+  const snap = await getDoc(ref);
+  let { coins, squad } = snap.data();
 
   if (coins < 750) return alert("Not enough coins!");
 
-  const newPlayers = [];
-  while (newPlayers.length < 9) {
+  const pack = [];
+  while (pack.length < 9) {
     const p = playersList[Math.floor(Math.random() * playersList.length)];
-    if (!squad.includes(p) && !newPlayers.includes(p)) newPlayers.push(p);
+    if (!squad.includes(p) && !pack.includes(p)) pack.push(p);
   }
 
-  await updateDoc(userRef, {
+  await updateDoc(ref, {
     coins: coins - 750,
-    squad: arrayUnion(...newPlayers)
+    squad: arrayUnion(...pack)
   });
 
-  alert("Pack opened!");
   document.getElementById("coins").innerText = coins - 750;
-  renderSquad([...squad, ...newPlayers]);
+  renderCards("squad", [...squad, ...pack], true);
 };
 
-// UI Helpers
-function renderSquad(squad) {
-  const ul = document.getElementById("squad");
-  ul.innerHTML = "";
-  squad.forEach(name => {
-    const li = document.createElement("li");
-    li.textContent = name;
-    const btn = document.createElement("button");
-    btn.textContent = "+ Add to Dream";
-    btn.onclick = () => addToDream(name);
-    li.appendChild(btn);
-    ul.appendChild(li);
+function renderCards(sectionId, players, canAddToDream) {
+  const container = document.getElementById(sectionId);
+  container.innerHTML = "";
+  players.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `<strong>${p}</strong>`;
+    if (canAddToDream) {
+      const btn = document.createElement("button");
+      btn.textContent = "+ Dream Team";
+      btn.onclick = () => addToDreamTeam(p);
+      div.appendChild(btn);
+    }
+    container.appendChild(div);
   });
 }
 
-function renderDreamTeam(dreamTeam) {
-  const ul = document.getElementById("dream-team");
-  ul.innerHTML = "";
-  dreamTeam.forEach(name => {
-    const li = document.createElement("li");
-    li.textContent = name;
-    ul.appendChild(li);
-  });
-}
-
-async function addToDream(player) {
+async function addToDreamTeam(player) {
   if (!currentUser) return;
-  const userRef = doc(db, "users", currentUser.uid);
-  const userSnap = await getDoc(userRef);
-  const team = userSnap.data().dreamTeam || [];
+  const ref = doc(db, "users", currentUser.uid);
+  const snap = await getDoc(ref);
+  let team = snap.data().dreamTeam;
 
+  if (team.includes(player)) return alert("Already added!");
   if (team.length >= 11) return alert("Dream Team full!");
-  if (team.includes(player)) return alert("Already in Dream Team!");
 
   team.push(player);
-  await updateDoc(userRef, { dreamTeam: team });
-  renderDreamTeam(team);
+  await updateDoc(ref, { dreamTeam: team });
+  renderCards("dream-team", team, false);
 }
