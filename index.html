@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CricBash - Pack Opening & Dream Team</title>
+<link rel="stylesheet" href="style.css" />
+<!-- Firebase SDKs -->
+<script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js"></script>
+<script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js"></script>
+<script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js"></script>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>CricBash</h1>
+    <div id="user-info">
+      <span id="welcome-msg"></span>
+      <button id="btn-logout" style="display:none;">Logout</button>
+    </div>
+  </header>
+
+  <section id="auth-section">
+    <h2>Login / Signup</h2>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <button id="btn-login">Login</button>
+    <button id="btn-signup">Signup</button>
+    <p id="auth-error" class="error"></p>
+  </section>
+
+  <section id="game-section" style="display:none;">
+    <h2>Your Coins: <span id="coins">0</span></h2>
+
+    <div id="packs">
+      <h3>Buy Packs</h3>
+      <button class="pack-btn" data-pack="starter" data-cost="750">Starter Pack (9 Players) - 750 Coins</button>
+      <button class="pack-btn" data-pack="standard" data-cost="300">Standard Pack (5 Players) - 300 Coins</button>
+      <button class="pack-btn" data-pack="rare" data-cost="500">Rare Pack (5 Players) - 500 Coins</button>
+      <button class="pack-btn" data-pack="elite" data-cost="700">Elite Pack (3 Players) - 700 Coins</button>
+      <button class="pack-btn" data-pack="legendary" data-cost="900">Legendary Pack (2 Players) - 900 Coins</button>
+    </div>
+
+    <div id="pack-opening" style="margin-top:20px;">
+      <h3>Pack Opening Result:</h3>
+      <div id="opened-players"></div>
+    </div>
+
+    <div id="dream-team" style="margin-top:40px;">
+      <h3>Your Dream Team (Max 11 Players)</h3>
+      <div id="dream-team-list"></div>
+    </div>
+  </section>
+</div>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
